@@ -1,0 +1,98 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
+	
+	<link rel="stylesheet" href="../src/leaflet-search.css" />
+	<link rel="stylesheet" href="../src/leaflet-list-markers.css">
+	<link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div id="nome">
+        <h2>Rio Juruena</h2>
+    </div>
+
+<script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
+<script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+<script src="../src/leaflet-search.js"></script>
+<script src="../src/leaflet-list-markers.js"></script>
+<div id="main">
+	<div id="lista">
+		
+	</div>
+	<div id="map"></div>
+</div>
+<script>
+
+	var data = [
+		{"loc":[-8.22597222222222, -58.3233055555556], "title":"São Simão: UHE"},
+		{"loc":[-8.88508333333333, -58.5583611111111], "title":"Salto Augusto: UHE"},
+		{"loc":[-9.18313888888889, -58.6631666666667], "title":"Escondido: UHE"},
+		{"loc":[-10.34475, -57.6736388888889], "title":"São João da Barra: PCH"},
+		{"loc":[-10.5269444444444, -57.8961111111111], "title":"Fazenda Modelo: CGH"},
+		{"loc":[-10.5572222, 58.17005555], "title":"ARN-026: UHE"},
+		{"loc":[-10.5243333333333, -58.3942777777778], "title":"Tucumã: UHE"},	
+		{"loc":[-10.96305599, -58.3316669], "title":"Cinta Larga: UHE"},
+		{"loc":[-10.971179, -57.2054262], "title":"Juara: PCH"},
+		{"loc":[-11.0626666666667, -57.7495], "title":"Castanheira: UHE"},
+		{"loc":[-11.0314166666667, -58.3776388888889], "title":"Erikpatsa: UHE"},
+		{"loc":[-11.06396004, -58.25345005], "title":"SAN 020: UHE"},	
+		{"loc":[-11.08195, -58.5091777777778], "title":"Maria Bonita I: CGH"},
+		{"loc":[-10.94172222, -57.32205555], "title":"PEX-93: UHE"},
+		{"loc":[-11.1040944444444, -58.5332138888889], "title":"Maria Bonita II: CGH"},
+		{"loc":[-11.074975, -58.50275], "title":"Maria Bonita III: CGH"},
+		{"loc":[-11.3407222222222, -58.3344166666667], "title":"Fontanilhas: UHE"},
+		{"loc":[-11.34249999, -58.13444444], "title":"Kabiara: UHE"},
+		{"loc":[-12.26092, -57.9950187], "title":"Itapiranga: CGH"},
+		{"loc":[-12.2684669, -57.64467032], "title":"Roncador: UHE"},
+
+	];
+
+
+	var map = new L.Map('map', {zoom: 7, center: new L.latLng(data[0].loc) });	//set center from first location
+
+	L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=cV0m6jdl81SJYSNO8STs',{
+    atribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+
+}).addTo(map);	//base layer
+
+	var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	map.addLayer(markersLayer);
+
+	map.addControl( new L.Control.Search({layer: markersLayer}) );  //inizialize search control
+	////////////populate map with markers from sample data
+	for(i in data) {
+		var title = data[i].title,	//value searched
+			loc = data[i].loc,		//position found
+			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
+		marker.bindPopup(title);
+		markersLayer.addLayer(marker);
+	}
+
+	//inizialize Leaflet List Markers
+	var list = new L.Control.ListMarkers({layer: markersLayer, itemIcon: null});
+	
+	list.on('item-mouseover', function(e) {
+		e.layer.setIcon(L.icon({
+			iconUrl: '../images/select-marker.png'
+		}))
+	}).on('item-mouseout', function(e) {
+		e.layer.setIcon(L.icon({
+			iconUrl: L.Icon.Default.imagePath+'/marker-icon.png'
+		}))
+	});
+
+	map.addControl(list);
+
+
+
+</script>
+
+
+</body>
+</html>
